@@ -1,0 +1,237 @@
+/* ---------------------------------------------------------------------- */
+/* Script generated with: DeZign for Databases v6.2.1                     */
+/* Target DBMS:           PostgreSQL 8.3                                  */
+/* Project file:          MERMedico.dez                                   */
+/* Project name:                                                          */
+/* Author:                                                                */
+/* Script type:           Database creation script                        */
+/* Created on:            2018-07-21 10:07                                */
+/* ---------------------------------------------------------------------- */
+
+
+/* ---------------------------------------------------------------------- */
+/* Tables                                                                 */
+/* ---------------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------------- */
+/* Add table "Pacientes"                                                  */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE Pacientes (
+    PacienteID SERIAL   NOT NULL,
+    Cedula CHARACTER VARYING(10) ,
+    Nombre CHARACTER VARYING(100) ,
+    Telefono CHARACTER VARYING(15) ,
+    FechaNacimiento DATE ,
+    EstadoCivil CHARACTER VARYING(100) ,
+    Direccion CHARACTER VARYING(100) ,
+    Ocupacion CHARACTER VARYING(100) ,
+    Sexo CHARACTER VARYING(100) ,
+    Correo CHARACTER VARYING(100) ,
+    CONSTRAINT PK_Pacientes PRIMARY KEY (PacienteID)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "ConsultorioMedico"                                          */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE ConsultorioMedico (
+    ConsultorioID SERIAL   NOT NULL,
+    Nombre CHARACTER VARYING(100) ,
+    Direccion CHARACTER VARYING(100) ,
+    Telefono CHARACTER VARYING(15) ,
+    Correo CHARACTER VARYING(100) ,
+    CONSTRAINT PK_CentroMedico PRIMARY KEY (ConsultorioID)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "FichaMedica"                                                */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE FichaMedica (
+    FichaMedica SERIAL   NOT NULL,
+    PacienteID INTEGER   NOT NULL,
+    CentroMedicoID INTEGER ,
+    SignosVitales INTEGER ,
+    FechaRegistro DATE ,
+    Costo NUMERIC ,
+    Abono NUMERIC ,
+    Total NUMERIC ,
+    CONSTRAINT PK_FichaMedica PRIMARY KEY (FichaMedica)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "AntecedenteMedico"                                          */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE AntecedenteMedico (
+    AntecedenteMedicoID SERIAL   NOT NULL,
+    NombreAntecedente CHARACTER VARYING(100) ,
+    Descripcion CHARACTER VARYING(100) ,
+    CONSTRAINT PK_AntecedenteMedico PRIMARY KEY (AntecedenteMedicoID)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "AntecedenteMedicoFichaMedica"                               */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE AntecedenteMedicoFichaMedica (
+    AntecedenteFichaMedica SERIAL   NOT NULL,
+    FichaMedica INTEGER   NOT NULL,
+    AntecedenteMedicoID INTEGER   NOT NULL,
+    CONSTRAINT PK_AntecedenteMedico_FichaMedica PRIMARY KEY (AntecedenteFichaMedica)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "Doctores"                                                   */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE Doctores (
+    DoctorID SERIAL   NOT NULL,
+    Nombre CHARACTER VARYING(100) ,
+    Apellido CHARACTER VARYING(100) ,
+    correo CHARACTER VARYING(100) ,
+    direccion CHARACTER VARYING(100) ,
+    cedula CHARACTER VARYING(15) ,
+    especialidad CHARACTER VARYING(100) ,
+    añosExperiencia INTEGER ,
+    sexo CHARACTER VARYING(100) ,
+    CONSTRAINT PK_Doctores PRIMARY KEY (DoctorID)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "Tratamientos"                                               */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE Tratamientos (
+    TratamientoID SERIAL   NOT NULL,
+    Descripcion CHARACTER VARYING(100) ,
+    Costo NUMERIC ,
+    CONSTRAINT PK_Tratamientos PRIMARY KEY (TratamientoID)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "Medicamentos"                                               */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE Medicamentos (
+    MedicamentoID SERIAL   NOT NULL,
+    NombreMedicina CHARACTER VARYING(100) ,
+    descripcion CHARACTER VARYING(100) ,
+    CONSTRAINT PK_Medicamentos PRIMARY KEY (MedicamentoID)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "MedicamentosTratamientos"                                   */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE MedicamentosTratamientos (
+    Medicina_tratamiento SERIAL   NOT NULL,
+    MedicamentoID INTEGER   NOT NULL,
+    TratamientoID INTEGER   NOT NULL,
+    CONSTRAINT PK_Medicamentos_Tratamientos PRIMARY KEY (Medicina_tratamiento)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "Motivo"                                                     */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE Motivo (
+    MotivoID SERIAL   NOT NULL,
+    Descripcion CHARACTER VARYING(100) ,
+    CONSTRAINT PK_Motivo PRIMARY KEY (MotivoID)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "ConsultaMedica"                                             */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE ConsultaMedica (
+    ConsultaID SERIAL   NOT NULL,
+    DoctorID INTEGER   NOT NULL,
+    TratamientoID INTEGER ,
+    FechaConsulta DATE ,
+    CONSTRAINT PK_ConsultaMedica PRIMARY KEY (ConsultaID)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "MotivoConsultaMedica"                                       */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE MotivoConsultaMedica (
+    Motivo_Consulta SERIAL   NOT NULL,
+    MotivoID INTEGER   NOT NULL,
+    ConsultaID INTEGER   NOT NULL,
+    CONSTRAINT PK_Motivo_ConsultaMedica PRIMARY KEY (Motivo_Consulta)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "HistoriaClinica"                                            */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE HistoriaClinica (
+    HistoriaID SERIAL   NOT NULL,
+    FichaMedica INTEGER ,
+    ConsultaID INTEGER ,
+    FechaInicio DATE ,
+    FechaFinal DATE ,
+    CONSTRAINT PK_HistoriaClinica PRIMARY KEY (HistoriaID)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "SignosVitales"                                              */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE SignosVitales (
+    SignosVitales SERIAL   NOT NULL,
+    MasaCorporal CHARACTER VARYING(40) ,
+    Talla CHARACTER VARYING(40) ,
+    Peso CHARACTER VARYING(40) ,
+    Temperatura CHARACTER VARYING(40) ,
+    Presion CHARACTER VARYING(40) ,
+    emergencia BOOLEAN ,
+    CONSTRAINT PK_SignosVitales PRIMARY KEY (SignosVitales)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Foreign key constraints                                                */
+/* ---------------------------------------------------------------------- */
+
+ALTER TABLE FichaMedica ADD CONSTRAINT Pacientes_FichaMedica 
+    FOREIGN KEY (PacienteID) REFERENCES Pacientes (PacienteID);
+
+ALTER TABLE FichaMedica ADD CONSTRAINT CentroMedico_FichaMedica 
+    FOREIGN KEY (CentroMedicoID) REFERENCES ConsultorioMedico (ConsultorioID);
+
+ALTER TABLE FichaMedica ADD CONSTRAINT SignosVitales_FichaMedica 
+    FOREIGN KEY (SignosVitales) REFERENCES SignosVitales (SignosVitales);
+
+ALTER TABLE AntecedenteMedicoFichaMedica ADD CONSTRAINT AntecedenteMedico_AntecedenteMedico_FichaMedica 
+    FOREIGN KEY (AntecedenteMedicoID) REFERENCES AntecedenteMedico (AntecedenteMedicoID);
+
+ALTER TABLE AntecedenteMedicoFichaMedica ADD CONSTRAINT FichaMedica_AntecedenteMedico_FichaMedica 
+    FOREIGN KEY (FichaMedica) REFERENCES FichaMedica (FichaMedica);
+
+ALTER TABLE MedicamentosTratamientos ADD CONSTRAINT Medicamentos_Medicamentos_Tratamientos 
+    FOREIGN KEY (MedicamentoID) REFERENCES Medicamentos (MedicamentoID);
+
+ALTER TABLE MedicamentosTratamientos ADD CONSTRAINT Tratamientos_Medicamentos_Tratamientos 
+    FOREIGN KEY (TratamientoID) REFERENCES Tratamientos (TratamientoID);
+
+ALTER TABLE ConsultaMedica ADD CONSTRAINT Doctores_ConsultaMedica 
+    FOREIGN KEY (DoctorID) REFERENCES Doctores (DoctorID);
+
+ALTER TABLE ConsultaMedica ADD CONSTRAINT Tratamientos_ConsultaMedica 
+    FOREIGN KEY (TratamientoID) REFERENCES Tratamientos (TratamientoID);
+
+ALTER TABLE MotivoConsultaMedica ADD CONSTRAINT Motivo_Motivo_ConsultaMedica 
+    FOREIGN KEY (MotivoID) REFERENCES Motivo (MotivoID);
+
+ALTER TABLE MotivoConsultaMedica ADD CONSTRAINT ConsultaMedica_Motivo_ConsultaMedica 
+    FOREIGN KEY (ConsultaID) REFERENCES ConsultaMedica (ConsultaID);
+
+ALTER TABLE HistoriaClinica ADD CONSTRAINT FichaMedica_HistoriaClinica 
+    FOREIGN KEY (FichaMedica) REFERENCES FichaMedica (FichaMedica);
+
+ALTER TABLE HistoriaClinica ADD CONSTRAINT ConsultaMedica_HistoriaClinica 
+    FOREIGN KEY (ConsultaID) REFERENCES ConsultaMedica (ConsultaID);

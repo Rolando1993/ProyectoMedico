@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <f:facet name="first">
+            <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+            <title>--Usuario--</title>
+        </f:facet>
+    </h:head>
+    <h:body>
+        <h:form>   
+            <center>
+                <h1>Bienvenidos al Sistema </h1>
+            </center>
+            <br/>
+            <h:outputLink value="javascript:void(0)" onclick="PF('dlg').show();" title="Click sobre el logo para ingresar.">
+                <center>             
+                    <h:graphicImage value="/Imagenes/login.jpg" style="margin-left: 10px; " width="270px" height="230px"></h:graphicImage>
+                </center>
+            </h:outputLink>
+            <center><table>
+                    <tr><td style="font-family: raleway; font-size: 20px">Proyecto Integrador </td></tr>
+                    <tr/>
+                    <tr>
+                        <td style="font-family: raleway; font-size: 18px">
+                            
+                        </td>
+                    </tr>
+                </table></center>
+            <p:growl id="growl" sticky="true" showDetail="true" life="3000" />
+            <p:dialog header="Ingresar al Sistema" widgetVar="dlg" resizable="true">
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel for="username" value="Usuario:" />
+                    <p:inputText id="username" value="#{loginMB.cedula}" required="true" label="Cedula" />
+                    <h:outputLabel for="password" value="Contraseña:" />
+                    <p:password id="password" value="#{loginMB.contraseña}" required="true" label="Contraseña" />
+                    <f:facet name="footer">
+                        <center><p:commandButton value="Ingresar" update="growl" action="/Views/Bienvenido.xhtml"
+                                                 oncomplete="handleLoginRequest(xhr, status, args)" /></center>
+                    </f:facet>                    
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+        <br />
+    </h:body>
+    <script type="text/javascript">
+        function handleLoginRequest(xhr, status, args) {
+            if (args.validationFailed || !args.loggedIn) {
+                PF('dlg').jq.effect("shake", {times: 1}, 100);
+            }
+            else {
+                PF('dlg').hide();
+                $('#loginLink').fadeOut();
+            }
+        }
+    </script>
+</html>
+
+

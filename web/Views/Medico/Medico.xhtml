@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+
+        <ui:composition template="./../../plantilla/plantilla.xhtml">
+
+            <ui:define name="content">
+                <h1>Datos Del Medico</h1>
+                <h:form>
+                    <p:commandButton value="Nuevo Doctor" actionListener="#{doctoresMB.prepararNuevoDoctor()}"
+                                     oncomplete="PF('dialogNuevoDoctor').show();" update=":formNuevoDoctor"/>
+                </h:form>
+
+                <h:form id="formMostrarDoctores">
+                    <p:dataTable id="tablaDoctores" paginator="true" paginatorPosition="top"
+                                 var="doc" value="#{doctoresMB.listaDoctores}" emptyMessage="No Hay Datos Del Doctor">
+                        <p:column headerText="Nombres y Apellidos">
+                            <h:outputText value="#{doc.nombre} #{doc.apellido}" />
+                        </p:column>
+
+                        <p:column headerText="Correo">
+                            <h:outputText value="#{doc.correo}"/>
+                        </p:column>
+
+                        <p:column headerText="Direccion">
+                            <h:outputText value="#{doc.direccion}"/>
+                        </p:column>
+
+                        <p:column headerText="Cedula">
+                            <h:outputText value="#{doc.cedula}"/>
+                        </p:column>
+
+                        <p:column headerText="Especialidad">
+                            <h:outputText value="#{doc.especialidad}"/>
+                        </p:column>
+
+                        <p:column headerText="Años De Experiencia">
+                            <h:outputText value="#{doc.aniosexperiencia}"/>
+                        </p:column>
+
+                        <p:column headerText="Sexo">
+                            <h:outputText value="#{doc.sexo}"/>
+                        </p:column>
+
+                        <p:column headerText="Modificar">
+                            <p:commandButton value="Modificar" oncomplete="PF('dlgmodificar').show();"
+                                             update=":formModificar">
+                                <f:setPropertyActionListener target="#{doctoresMB.doctor}" value="#{doc}"/>                
+                            </p:commandButton>
+                        </p:column>
+
+                        <p:column headerText="Eliminar">
+                            <p:commandButton value="Eliminar" oncomplete="PF('dlgeliminar').show();"
+                                             update=":formEliminar">
+                                <f:setPropertyActionListener target="#{doctoresMB.doctor}" value="#{doc}"/>     
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+
+                <h:form id="formNuevoDoctor">
+                    <p:dialog id="dlgNuevoDoctores" widgetVar="dialogNuevoDoctor" resizable="false"
+                              showEffect="explode" hideEffect="explode" modal="true">
+                        <p:panel header="Datos">
+                            <div class="ui-fluid">
+                                <p:panelGrid columns="2" style="margin: 0 auto;" columnClasses="label,value">
+                                    Nombre:
+                                    <p:inputText value="#{doctoresMB.doctor.nombre}" required="true"/>
+
+                                    Apellido:
+                                    <p:inputText value="#{doctoresMB.doctor.apellido}" required="true"/>
+
+                                    Correo:
+                                    <p:inputText value="#{doctoresMB.doctor.correo}" required="true"/>
+
+                                    Direccion:
+                                    <p:inputText value="#{doctoresMB.doctor.direccion}" required="true"/>
+
+                                    Cedula:
+                                    <p:inputText value="#{doctoresMB.doctor.cedula}" required="true" maxlength="10"
+                                                 requiredMessage="La Cantidad Maximo es de 10">
+                                        <f:validateLength minimum="10" />
+                                    </p:inputText>
+
+                                    Especialidad:
+                                    <p:selectOneMenu value="#{doctoresMB.doctor.especialidad}">
+                                        <f:selectItem itemLabel="Seleccione" itemValue="" />
+                                        <f:selectItem itemLabel="Medicina General" itemValue="Medicina General"/>
+                                        <f:selectItem itemLabel="Pediatrìa" itemValue="Pediatrìa"/>
+                                        <f:selectItem itemLabel="Otorrinolaringologìa" itemValue="Otorrinolaringologìa"/>
+                                        <f:selectItem itemLabel="Gastroenterologìa" itemValue="Gastroenterologìa"/>
+                                        <f:selectItem itemLabel="Cardiologìa" itemValue="Cardiologìa"/>
+                                        <f:selectItem itemLabel="Oftalmologìa" itemValue="Oftalmologìa"/>
+                                    </p:selectOneMenu>
+
+
+                                    Años De Experiencia:
+                                    <p:inputText value="#{doctoresMB.doctor.aniosexperiencia}" required="true" maxlength="10"/>
+
+
+                                    Sexo:
+                                    <p:selectOneMenu value="#{doctoresMB.doctor.sexo}">
+                                        <f:selectItem itemLabel="Seleccione" itemValue="" />
+                                        <f:selectItem itemLabel="Masculino" itemValue="Masculino"/>
+                                        <f:selectItem itemLabel="Femenino" itemValue="Femenino"/>
+                                    </p:selectOneMenu>
+
+                                </p:panelGrid>
+                            </div>
+                        </p:panel>
+                        <p:commandButton value="Guardar" actionListener="#{doctoresMB.persist()}"
+                                         update=":formMostrarDoctores:tablaDoctores" 
+                                         oncomplete="PF('dialogNuevoDoctor').hide();"/>
+                        <p:commandButton value="Cancelar" oncomplete="PF('dialogNuevoDoctor').hide();"/>
+                    </p:dialog>
+                </h:form>
+
+
+                <h:form id="formModificar">
+                    <p:dialog id="dlg" header="Modificar Doctor" showEffect="explode" height="explode" widgetVar="dlgmodificar" 
+                              modal="true"   resizable="false" minWidth="200">
+                        <p:panelGrid columns="2" style="margin: 0 auto;">
+                            Nombre:
+                            <p:inputText value="#{doctoresMB.doctor.nombre}" required="true"/>
+
+                            Apellido:
+                            <p:inputText value="#{doctoresMB.doctor.apellido}" required="true"/>
+
+                            Correo:
+                            <p:inputText value="#{doctoresMB.doctor.correo}" required="true"/>
+
+                            Direccion:
+                            <p:inputText value="#{doctoresMB.doctor.direccion}" required="true"/>
+
+                            Cedula:
+                            <p:inputText value="#{doctoresMB.doctor.cedula}" required="true" maxlength="10"
+                                         requiredMessage="La Cantidad Maximo es de 10">
+                                <f:validateLength minimum="10" />
+                            </p:inputText>
+
+                            Especialidad:
+                            <p:selectOneMenu value="#{doctoresMB.doctor.especialidad}">
+                                <f:selectItem itemLabel="Seleccione" itemValue="" />
+                                <f:selectItem itemLabel="Medicina General" itemValue="Medicina General"/>
+                                <f:selectItem itemLabel="Pediatrìa" itemValue="Pediatrìa"/>
+                                <f:selectItem itemLabel="Otorrinolaringologìa" itemValue="Otorrinolaringologìa"/>
+                                <f:selectItem itemLabel="Gastroenterologìa" itemValue="Gastroenterologìa"/>
+                                <f:selectItem itemLabel="Cardiologìa" itemValue="Cardiologìa"/>
+                                <f:selectItem itemLabel="Oftalmologìa" itemValue="Oftalmologìa"/>
+                            </p:selectOneMenu>
+
+
+                            Años De Experiencia:
+                            <p:inputText value="#{doctoresMB.doctor.aniosexperiencia}" required="true" maxlength="10"/>
+
+
+                            Sexo:
+                            <p:selectOneMenu value="#{doctoresMB.doctor.sexo}">
+                                <f:selectItem itemLabel="Seleccione" itemValue="" />
+                                <f:selectItem itemLabel="Masculino" itemValue="Masculino"/>
+                                <f:selectItem itemLabel="Femenino" itemValue="Femenino"/>
+                            </p:selectOneMenu>
+
+                        </p:panelGrid>
+                        <center><p:commandButton value="Modificar" update=":formMostrarDoctores:tablaDoctores"
+                                                 actionListener="#{doctoresMB.merge()}"
+                                                 oncomplete="PF('dlgmodificar').hide();"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <p:commandButton value="Cancelar" oncomplete="PF('dlgmodificar').hide();"/></center>
+                    </p:dialog>
+                </h:form>
+
+                <h:form id="formEliminar">
+                    <p:dialog id="dlg2" header="Eliminar Doctor" showEffect="explode" hideEffect="bounce"
+                              widgetVar="dlgeliminar" modal="true" resizable="false" minWidth="200">
+
+                        <p:outputLabel value="Desea Eliminar El Doctor: "/>
+                        <p:commandButton value="Si" update=":formMostrarDoctores:tablaDoctores"
+                                         actionListener="#{doctoresMB.remove()}"
+                                         oncomplete="PF('dlgeliminar').hide();"/>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <p:commandButton value="No" oncomplete="PF('dlgeliminar').hide();"/>
+                    </p:dialog>
+                </h:form>          
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

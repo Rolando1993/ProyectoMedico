@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../plantilla/plantilla.xhtml">
+
+            <ui:define name="content">
+                <h1>Medicamentos</h1>
+                <h:form>
+                    <p:commandButton value="Nuevo Medicamento" actionListener="#{medicamentosMB.prepararNuevoMedicamento()}"
+                                     oncomplete="PF('dialogNuevoMedicamento').show();" update=":formNuevoMedicamento"/>
+                </h:form>
+
+                <h:form id="formMostrarMedicamentos">
+                    <p:dataTable id="tablaMedicamentos" paginator="true" paginatorPosition="top"
+                                 var="med" value="#{medicamentosMB.listaMedicamentos}" emptyMessage="No Hay Medicamentos En El Sistema">
+                        <p:column headerText="Nombre">
+                            <h:outputText value="#{med.nombremedicina}" />
+                        </p:column>
+
+                        <p:column headerText="Descripcion">
+                            <h:outputText value="#{med.descripcion}"/>
+                        </p:column>
+
+                        <p:column headerText="Modificar">
+                            <p:commandButton value="Modificar" oncomplete="PF('dlgmodificar').show();"
+                                             update=":formModificar">
+                                <f:setPropertyActionListener target="#{medicamentosMB.medicamento}" value="#{med}"/>                
+                            </p:commandButton>
+                        </p:column>
+
+                        <p:column headerText="Eliminar">
+                            <p:commandButton value="Eliminar" oncomplete="PF('dlgeliminar').show();"
+                                             update=":formEliminar">
+                                <f:setPropertyActionListener target="#{medicamentosMB.medicamento}" value="#{med}"/>     
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+
+                <h:form id="formNuevoMedicamento">
+                    <p:dialog id="dlgNuevoMedicamentos" widgetVar="dialogNuevoMedicamento" resizable="false"
+                              showEffect="explode" hideEffect="explode" modal="true">
+                        <p:panel header="Datos">
+                            <div class="ui-fluid">
+                                <p:panelGrid columns="2" style="margin: 0 auto;" columnClasses="label,value">
+                                    Nombre:
+                                    <p:inputText value="#{medicamentosMB.medicamento.nombremedicina}" required="true"/>
+
+                                    Descripcion:
+                                    <p:inputText value="#{medicamentosMB.medicamento.descripcion}" required="true"/>
+
+                                </p:panelGrid>
+                            </div>
+                        </p:panel>
+                        <p:commandButton value="Guardar" actionListener="#{medicamentosMB.persist()}"
+                                         update=":formMostrarMedicamentos:tablaMedicamentos" 
+                                         oncomplete="PF('dialogNuevoMedicamento').hide();"/>
+                        <p:commandButton value="Cancelar" oncomplete="PF('dialogNuevoMedicamento').hide();"/>
+                    </p:dialog>
+                </h:form>
+
+
+                <h:form id="formModificar">
+                    <p:dialog id="dlg" header="Modificar Medicamento" showEffect="explode" height="explode" widgetVar="dlgmodificar" 
+                              modal="true"   resizable="false" minWidth="200">
+                        <p:panelGrid columns="2" style="margin: 0 auto;">
+                            Nombre:
+                            <p:inputText value="#{medicamentosMB.medicamento.nombremedicina}" required="true"/>
+
+                            Descripcion:
+                            <p:inputText value="#{medicamentosMB.medicamento.descripcion}" required="true"/>
+
+                        </p:panelGrid>
+                        <center><p:commandButton value="Modificar" update=":formMostrarMedicamentos:tablaMedicamentos"
+                                                 actionListener="#{medicamentosMB.merge()}"
+                                                 oncomplete="PF('dlgmodificar').hide();"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <p:commandButton value="Cancelar" oncomplete="PF('dlgmodificar').hide();"/></center>
+                    </p:dialog>
+                </h:form>
+
+                <h:form id="formEliminar">
+                    <p:dialog id="dlg2" header="Eliminar Medicamento" showEffect="explode" hideEffect="bounce"
+                              widgetVar="dlgeliminar" modal="true" resizable="false" minWidth="200">
+
+                        <p:outputLabel value="Desea Eliminar El Medicamento: "/>
+                        <p:commandButton value="Si" update=":formMostrarMedicamentos:tablaMedicamentos"
+                                         actionListener="#{medicamentosMB.remove()}"
+                                         oncomplete="PF('dlgeliminar').hide();"/>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <p:commandButton value="No" oncomplete="PF('dlgeliminar').hide();"/>
+                    </p:dialog>
+                </h:form>          
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
