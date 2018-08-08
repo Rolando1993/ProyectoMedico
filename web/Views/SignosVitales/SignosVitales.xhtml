@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../plantilla/plantilla.xhtml">
+
+            <ui:define name="content">
+                <h1>Datos Del Paciente</h1>
+                <h:form>
+                    <p:commandButton value="Nuevo Paciente" actionListener="#{pacienteMB.prepararNuevoPaciente()}"
+                                     oncomplete="PF('dialogNuevoPaciente').show();" update=":formNuevoPaciente"/>
+                </h:form>
+
+                <h:form id="formMostrarPacientes">
+                    <p:dataTable id="tablaPacientes" paginator="true" paginatorPosition="top"
+                                 var="pac" value="#{pacienteMB.listaPacientes}" emptyMessage="No Hay Datos Del Paciente">
+                        <p:column headerText="Codigo">
+                            <h:outputText value="#{pac.pacienteid}"/>
+                        </p:column>
+
+                        <p:column headerText="Cedula">
+                            <h:outputText value="#{pac.cedula}"/>
+                        </p:column>
+
+                        <p:column headerText="Nombre">
+                            <h:outputText value="#{pac.nombre}"/>
+                        </p:column>
+
+                        <p:column headerText="Telefono">
+                            <h:outputText value="#{pac.telefono}"/>
+                        </p:column>
+
+                        <p:column headerText="Fecha Nacimiento">
+                            <h:outputText value="#{pac.fechanacimiento}"/>
+                        </p:column>
+
+                        <p:column headerText="Telefono">
+                            <h:outputText value="#{pac.estadocivil}"/>
+                        </p:column>
+
+                        <p:column headerText="Telefono">
+                            <h:outputText value="#{pac.direccion}"/>
+                        </p:column>
+
+                        <p:column headerText="Ocupacion">
+                            <h:outputText value="#{pac.ocupacion}"/>
+                        </p:column>
+
+                        <p:column headerText="Sexo">
+                            <h:outputText value="#{pac.sexo}"/>
+                        </p:column>
+
+                        <p:column headerText="Modificar">
+                            <p:commandButton value="Modificar" oncomplete="PF('dlgmodificar').show();"
+                                             update=":formModificar">
+                                <f:setPropertyActionListener target="#{pacienteMB.paciente}" value="#{pac}"/>                
+                            </p:commandButton>
+                        </p:column>
+
+                        <p:column headerText="Eliminar">
+                            <p:commandButton value="Eliminar" oncomplete="PF('dlgeliminar').show();"
+                                             update=":formEliminar">
+                                <f:setPropertyActionListener target="#{pacienteMB.paciente}" value="#{pac}"/>     
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+
+                <h:form id="formNuevoPaciente">
+                    <p:dialog id="dlgNuevoPaciente" widgetVar="dialogNuevoPaciente" resizable="false"
+                              showEffect="explode" hideEffect="explode" modal="true">
+                        <p:panel header="Datos">
+                            <div class="ui-fluid">
+                                <p:panelGrid columns="2" style="margin: 0 auto;" columnClasses="label,value">
+                                    Cedula:
+                                    <p:inputText value="#{pacienteMB.paciente.cedula}" required="true" maxlength="10"
+                                                 requiredMessage="La Cantidad Maximo es de 10">
+                                        <f:validateLength minimum="10" />
+                                    </p:inputText>
+
+                                    Nombre:
+                                    <p:inputText value="#{pacienteMB.paciente.nombre}" required="true"/>
+
+                                    Direccion:
+                                    <p:inputText value="#{pacienteMB.paciente.direccion}" required="true"/>
+
+                                    Fecha de Nacimiento:
+                                    <p:calendar id="button" value="#{pacienteMB.paciente.fechanacimiento}" showOn="button" 
+                                                pattern="MM/dd/yyyy HH:mm:ss"/>
+
+                                    Ocupacion:
+                                    <p:inputText value="#{pacienteMB.paciente.ocupacion}" required="true"/>
+
+                                    Telefono:
+                                    <p:inputText value="#{pacienteMB.paciente.telefono}" required="true" maxlength="10"/>
+
+                                    Estado Civil:
+                                    <p:selectOneMenu value="#{pacienteMB.paciente.estadocivil}">
+                                        <f:selectItem itemLabel="Seleccione" itemValue="" />
+                                        <f:selectItem itemLabel="Soltero(a)" itemValue="Soltero(a)"/>
+                                        <f:selectItem itemLabel="Casado(a)" itemValue="Casado(a)"/>
+                                        <f:selectItem itemLabel="Viudo(a)" itemValue="Viudo(a)"/>
+                                        <f:selectItem itemLabel="U.Libre" itemValue="U.Libre"/>
+                                        <f:selectItem itemLabel="Divorciado(a)" itemValue="Divorciado(a)"/>
+                                    </p:selectOneMenu>
+
+                                    Sexo:
+                                    <p:selectOneMenu value="#{pacienteMB.paciente.sexo}">
+                                        <f:selectItem itemLabel="Seleccione" itemValue="" />
+                                        <f:selectItem itemLabel="Masculino" itemValue="Masculino"/>
+                                        <f:selectItem itemLabel="Femenino" itemValue="Femenino"/>
+                                    </p:selectOneMenu>
+
+                                </p:panelGrid>
+                            </div>
+                        </p:panel>
+                        <p:commandButton value="Guardar" actionListener="#{pacienteMB.persist()}"
+                                         update=":formMostrarPacientes:tablaPacientes" 
+                                         oncomplete="PF('dialogNuevoPaciente').hide();"/>
+                        <p:commandButton value="Cancelar" oncomplete="PF('dialogNuevoPaciente').hide();"/>
+                    </p:dialog>
+                </h:form>
+
+                <h:form id="formModificar">
+                    <p:dialog id="dlg" header="Modificar Paciente" showEffect="explode" height="explode" widgetVar="dlgmodificar" 
+                              modal="true"   resizable="false" minWidth="200">
+                        <p:panelGrid columns="2" style="margin: 0 auto;">
+                            Cedula:
+                                    <p:inputText value="#{pacienteMB.paciente.cedula}" required="true" maxlength="10">
+                                        <f:validateLength minimum="10" />
+                                    </p:inputText>
+
+                                    Nombre:
+                                    <p:inputText value="#{pacienteMB.paciente.nombre}" required="true"/>
+
+                                    Direccion:
+                                    <p:inputText value="#{pacienteMB.paciente.direccion}" required="true"/>
+
+                                    Fecha de Nacimiento:
+                                    <p:calendar id="button" value="#{pacienteMB.paciente.fechanacimiento}" showOn="button" 
+                                                pattern="MM/dd/yyyy HH:mm:ss"/>
+
+                                    Ocupacion:
+                                    <p:inputText value="#{pacienteMB.paciente.ocupacion}" required="true"/>
+
+                                    Telefono:
+                                    <p:inputText value="#{pacienteMB.paciente.telefono}" required="true" maxlength="10"/>
+
+                                    Estado Civil:
+                                    <p:selectOneMenu value="#{pacienteMB.paciente.estadocivil}">
+                                        <f:selectItem itemLabel="Seleccione" itemValue="" />
+                                        <f:selectItem itemLabel="Soltero(a)" itemValue="Soltero(a)"/>
+                                        <f:selectItem itemLabel="Casado(a)" itemValue="Casado(a)"/>
+                                        <f:selectItem itemLabel="Viudo(a)" itemValue="Viudo(a)"/>
+                                        <f:selectItem itemLabel="U.Libre" itemValue="U.Libre"/>
+                                        <f:selectItem itemLabel="Divorciado(a)" itemValue="Divorciado(a)"/>
+                                    </p:selectOneMenu>
+
+                                    Sexo:
+                                    <p:selectOneMenu value="#{pacienteMB.paciente.sexo}">
+                                        <f:selectItem itemLabel="Seleccione" itemValue="" />
+                                        <f:selectItem itemLabel="Masculino" itemValue="Masculino"/>
+                                        <f:selectItem itemLabel="Femenino" itemValue="Femenino"/>
+                                    </p:selectOneMenu>
+             
+                        </p:panelGrid>
+                        <center><p:commandButton value="Modificar" update=":formMostrarPacientes:tablaPacientes"
+                                                 actionListener="#{pacienteMB.merge()}"
+                                                 oncomplete="PF('dlgmodificar').hide();"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <p:commandButton value="Cancelar" oncomplete="PF('dlgmodificar').hide();"/></center>
+                    </p:dialog>
+                </h:form>
+
+                <h:form id="formEliminar">
+                    <p:dialog id="dlg2" header="Eliminar Paciente" showEffect="explode" hideEffect="bounce"
+                              widgetVar="dlgeliminar" modal="true" resizable="false" minWidth="200">
+
+                        <p:outputLabel value="Desea Eliminar El CPaciente: "/>
+                        <p:commandButton value="Si" update=":formMostrarPacientes:tablaPacientes"
+                                         actionListener="#{pacienteMB.remove()}"
+                                         oncomplete="PF('dlgeliminar').hide();"/>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <p:commandButton value="No" oncomplete="PF('dlgeliminar').hide();"/>
+                    </p:dialog>
+                </h:form>          
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
